@@ -52,60 +52,73 @@ def parse_js(js: str):
 
     flights = MetaList()
     if payload[3][0] is None:
+        flights.metadata = meta
         return flights
 
     for k in payload[3][0]:
-        flight = k[0]
-        price = k[1][0][1]
+        try:
+            flight = k[0]
+            # Price might be in different locations or missing
+            price = None
+            if k[1] and len(k[1]) > 0:
+                if isinstance(k[1][0], list) and len(k[1][0]) > 1:
+                    price = k[1][0][1]
+                elif isinstance(k[1][0], (int, float)):
+                    price = k[1][0]
 
-        typ = flight[0]
-        airlines = flight[1]
+            if price is None:
+                continue  # Skip flights without price
 
-        sg_flights = []
+            typ = flight[0]
+            airlines_list = flight[1]
 
-        # multiple flights!
-        for single_flight in flight[2]:
-            from_airport = Airport(code=single_flight[3], name=single_flight[4])
-            to_airport = Airport(code=single_flight[6], name=single_flight[5])
-            departure_time = single_flight[8]
-            departure_date = single_flight[20]
-            departure = SimpleDatetime(date=departure_date, time=departure_time)
+            sg_flights = []
 
-            arrival_time = single_flight[10]
-            arrival_date = single_flight[21]
-            arrival = SimpleDatetime(date=arrival_date, time=arrival_time)
+            # multiple flights!
+            for single_flight in flight[2]:
+                from_airport = Airport(code=single_flight[3], name=single_flight[4])
+                to_airport = Airport(code=single_flight[6], name=single_flight[5])
+                departure_time = single_flight[8]
+                departure_date = single_flight[20]
+                departure = SimpleDatetime(date=departure_date, time=departure_time)
 
-            plane_type = single_flight[17]
+                arrival_time = single_flight[10]
+                arrival_date = single_flight[21]
+                arrival = SimpleDatetime(date=arrival_date, time=arrival_time)
 
-            duration = single_flight[11]
+                plane_type = single_flight[17]
 
-            sg_flights.append(
-                SingleFlight(
-                    from_airport=from_airport,
-                    to_airport=to_airport,
-                    departure=departure,
-                    arrival=arrival,
-                    duration=duration,
-                    plane_type=plane_type,
+                duration = single_flight[11]
+
+                sg_flights.append(
+                    SingleFlight(
+                        from_airport=from_airport,
+                        to_airport=to_airport,
+                        departure=departure,
+                        arrival=arrival,
+                        duration=duration,
+                        plane_type=plane_type,
+                    )
+                )
+
+            # some additional data
+            extras = flight[22] if len(flight) > 22 else [None] * 10
+            carbon_emission = extras[7] if extras and len(extras) > 7 else None
+            typical_carbon_emission = extras[8] if extras and len(extras) > 8 else None
+
+            flights.append(
+                Flights(
+                    type=typ,
+                    price=price,
+                    airlines=airlines_list,
+                    flights=sg_flights,
+                    carbon=CarbonEmission(
+                        typical_on_route=typical_carbon_emission, emission=carbon_emission
+                    ),
                 )
             )
-
-        # some additional data
-        extras = flight[22]
-        carbon_emission = extras[7]
-        typical_carbon_emission = extras[8]
-
-        flights.append(
-            Flights(
-                type=typ,
-                price=price,
-                airlines=airlines,
-                flights=sg_flights,
-                carbon=CarbonEmission(
-                    typical_on_route=typical_carbon_emission, emission=carbon_emission
-                ),
-            )
-        )
+        except (IndexError, TypeError, KeyError):
+            continue  # Skip malformed entries
 
     flights.metadata = meta
     return flights
