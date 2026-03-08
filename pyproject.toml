@@ -22,7 +22,8 @@ dependencies = [
   "primp",
   "protobuf>=5.27.0",
   "selectolax",
-  "curl_cffi"
+  "curl_cffi",
+  "typing_extensions"
 ]
 
 [project.optional-dependencies]
@@ -31,9 +32,8 @@ local = [
 ]
 
 [project.urls]
-"Source" = "https://github.com/AWeirdDev/flights"
-"Issues" = "https://github.com/AWeirdDev/flights/issues"
-"Documentation" = "https://aweirddev.github.io/flights/"
+"Source" = "https://github.com/licheng5625/google-flights"
+"Issues" = "https://github.com/licheng5625/google-flights/issues"
 
 [tool.setuptools]
 packages = [
