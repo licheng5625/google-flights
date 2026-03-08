@@ -1,0 +1,11 @@
+**/__pycache__/
+/main.py
+.ruff/
+.idea
+.venv
+.ipynb_checkpoints/
+
+# no judging
+protoc.exe
+
+dist/
