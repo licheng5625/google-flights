@@ -1,6 +1,6 @@
 # fast-flights
 
-A fast, robust Google Flights scraper (API) implemented in Python. Supports flight search, price calendars, and shopping APIs.
+A fast, robust Google Flights scraper (API) implemented in Python. Supports flight search and price calendar APIs.
 
 ## Installation
 
@@ -10,29 +10,32 @@ pip install fast-flights
 
 ## Features
 
-- **Flight Search**: Search for flights with flexible filters
+- **Flight Search**: Search for flights with flexible filters via `get_flights()`
 - **Price Calendar Grid**: Get 2D price matrix for departure/return date ranges
 - **Price Calendar Graph**: Get prices for fixed trip duration across a date range
-- **Shopping API**: Detailed flight information with legs, prices, and airlines
 
 ## Quick Start
 
 ### Search Flights
 
 ```python
-from fast_flights import search_flights
+from fast_flights import FlightQuery, Passengers, create_query, get_flights
 
-flights = search_flights(
-    from_airport="FRA",
-    to_airport="PVG",
-    departure_date="2026-05-01",
-    return_date="2026-05-15",
-    adults=1,
+query = create_query(
+    flights=[
+        FlightQuery(date="2026-05-28", from_airport="FRA", to_airport="TAO", max_stops=1)
+    ],
+    passengers=Passengers(adults=1),
     currency="EUR",
 )
 
-for flight in flights:
-    print(f"{flight.departure_time} - {flight.arrival_time}: {flight.price_str}")
+result = get_flights(query)
+
+for flight in result:
+    stops = len(flight.flights) - 1
+    print(f"{flight.price} EUR - {stops} stops")
+    for leg in flight.flights:
+        print(f"  {leg.from_airport.code} -> {leg.to_airport.code}")
 ```
 
 ### Price Calendar Grid (2D Matrix)

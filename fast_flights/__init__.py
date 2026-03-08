@@ -17,13 +17,6 @@ from .calendar import (
     AIRPORT,
     CITY,
 )
-from .shopping import (
-    search_flights,
-    ShoppingFlight,
-    FlightLeg,
-    format_price,
-    CURRENCY_SYMBOLS,
-)
 
 __all__ = [
     # Main API (Protobuf-based)
@@ -34,12 +27,6 @@ __all__ = [
     "create_filter",
     "get_flights",
     "fetch_flights_html",
-    # Shopping API (JSON-based)
-    "search_flights",
-    "ShoppingFlight",
-    "FlightLeg",
-    "format_price",
-    "CURRENCY_SYMBOLS",
     # Calendar API
     "get_price_calendar",
     "get_calendar_grid",
