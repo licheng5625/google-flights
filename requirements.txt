@@ -1,0 +1,5 @@
+primp
+protobuf>=5.27.0
+selectolax
+curl_cffi
+typing_extensions
