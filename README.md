@@ -101,6 +101,40 @@ calendar = get_calendar_grid(
 )
 ```
 
+### Generate Google Flights URL
+
+Generate a shareable Google Flights search URL:
+
+```python
+from fast_flights import FlightQuery, Passengers, create_query
+
+# One-way
+query = create_query(
+    flights=[FlightQuery(date="2026-05-28", from_airport="FRA", to_airport="TAO", max_stops=1)],
+    passengers=Passengers(adults=1),
+    currency="EUR",
+)
+print(query.url())
+# https://www.google.com/travel/flights/search?tfs=...&curr=EUR
+
+# Round-trip
+query = create_query(
+    flights=[
+        FlightQuery(date="2026-05-28", from_airport="FRA", to_airport="TAO", max_stops=1),
+        FlightQuery(date="2026-06-17", from_airport="TAO", to_airport="FRA", max_stops=1),
+    ],
+    trip="round-trip",
+    passengers=Passengers(adults=1),
+    currency="EUR",
+)
+print(query.url())
+```
+
+Query object methods:
+- `query.url()` - Full Google Flights search URL
+- `query.params()` - Dictionary of URL parameters
+- `query.to_str()` - Base64-encoded tfs parameter
+
 ## API Reference
 
 ### `get_calendar_grid()`
