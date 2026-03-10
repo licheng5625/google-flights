@@ -1,18 +1,21 @@
 # Google Flights Search
 
-Fast, robust Google Flights scraper (API) for searching flights, price calendars, and detailed flight information.
+Fast, robust Google Flights scraper (API) for searching flights and price calendars.
 
 ## Features
 
 - ✈️ **Flight Search**: Search flights with flexible filters
 - 📅 **Price Calendar Grid**: 2D price matrix for departure/return date ranges
 - 📊 **Price Calendar Graph**: Prices for fixed trip duration across dates
-- 🛒 **Shopping API**: Detailed flight information with legs, prices, airlines
 
 ## Installation
 
 ```bash
-pip3 install git+https://github.com/licheng5625/google-flights.git
+# Install dependencies
+pip install protobuf curl_cffi selectolax primp
+
+# Or using requirements.txt
+pip install -r requirements.txt
 ```
 
 ## Usage
@@ -20,7 +23,7 @@ pip3 install git+https://github.com/licheng5625/google-flights.git
 ### 1. Search Flights
 
 ```bash
-python3 /config/nanobot/workspace/skills/google-flights/search_flights.py \
+python3 /config/nanobot/workspace/skills/google-flights/skill/search_flights.py \
   --from FRA \
   --to PVG \
   --departure 2026-05-01 \
@@ -34,7 +37,7 @@ python3 /config/nanobot/workspace/skills/google-flights/search_flights.py \
 Get prices for all combinations of departure and return dates:
 
 ```bash
-python3 /config/nanobot/workspace/skills/google-flights/calendar_grid.py \
+python3 /config/nanobot/workspace/skills/google-flights/skill/calendar_grid.py \
   --from FRA \
   --to TAO \
   --departure-range 2026-04-28 2026-05-05 \
@@ -48,7 +51,7 @@ python3 /config/nanobot/workspace/skills/google-flights/calendar_grid.py \
 Get prices for a fixed trip duration:
 
 ```bash
-python3 /config/nanobot/workspace/skills/google-flights/calendar_graph.py \
+python3 /config/nanobot/workspace/skills/google-flights/skill/calendar_graph.py \
   --from FRA \
   --to TAO \
   --date-range 2026-05-01 2026-06-30 \
@@ -83,20 +86,19 @@ python3 /config/nanobot/workspace/skills/google-flights/calendar_graph.py \
 ### Find cheapest flight to Beijing
 
 ```bash
-python3 /config/nanobot/workspace/skills/google-flights/search_flights.py \
+python3 /config/nanobot/workspace/skills/google-flights/skill/search_flights.py \
   --from FRA \
   --to PEK \
   --departure 2026-05-01 \
   --return 2026-05-15 \
   --adults 2 \
-  --max-stops 1 \
   --currency EUR
 ```
 
 ### Find best 2-week vacation dates
 
 ```bash
-python3 /config/nanobot/workspace/skills/google-flights/calendar_graph.py \
+python3 /config/nanobot/workspace/skills/google-flights/skill/calendar_graph.py \
   --from FRA \
   --to TAO \
   --date-range 2026-05-01 2026-06-30 \
@@ -108,7 +110,7 @@ python3 /config/nanobot/workspace/skills/google-flights/calendar_graph.py \
 ### Compare prices for flexible dates
 
 ```bash
-python3 /config/nanobot/workspace/skills/google-flights/calendar_grid.py \
+python3 /config/nanobot/workspace/skills/google-flights/skill/calendar_grid.py \
   --from FRA \
   --to PVG \
   --departure-range 2026-04-28 2026-05-05 \
@@ -124,19 +126,17 @@ All scripts output JSON with flight information:
 ```json
 {
   "success": true,
-  "flights": [
+  "entries": [
     {
-      "departure_time": "2026-05-01 14:20",
-      "arrival_time": "2026-05-02 08:10",
-      "duration": "23h 50m",
-      "stops": 1,
+      "outbound_date": "2026-05-01",
+      "return_date": "2026-05-15",
       "price": 475.0,
-      "currency": "EUR",
-      "airline": "MIAT",
-      "is_best": true
+      "currency": "EUR"
     }
   ],
   "cheapest": {
+    "outbound_date": "2026-05-01",
+    "return_date": "2026-05-15",
     "price": 475.0,
     "currency": "EUR"
   }
@@ -162,4 +162,4 @@ Use Google's MID identifiers for city-level search:
 
 ## Repository
 
-https://github.com/licheng5625/google-flights
+https://github.com/AirP0WeR/google-flights
