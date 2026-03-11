@@ -203,3 +203,5 @@ entry.currency       # "EUR"
 ## License
 
 MIT License
+
+<!-- Test PR created by Claude Code on 2026-03-11 -->
